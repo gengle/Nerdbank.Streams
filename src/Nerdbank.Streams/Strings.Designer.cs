@@ -106,6 +106,24 @@ namespace Nerdbank.Streams {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The PipeReader was canceled..
+        /// </summary>
+        internal static string PipeReaderCanceled {
+            get {
+                return ResourceManager.GetString("PipeReaderCanceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The PipeWriter was canceled..
+        /// </summary>
+        internal static string PipeWriterCanceled {
+            get {
+                return ResourceManager.GetString("PipeWriterCanceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No reading operation to complete..
         /// </summary>
         internal static string ReadBeforeAdvanceTo {
@@ -138,6 +156,15 @@ namespace Nerdbank.Streams {
         internal static string SeededChannelsRequireV3Protocol {
             get {
                 return ResourceManager.GetString("SeededChannelsRequireV3Protocol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The PipeWriter was marked as completed before all bytes from the reader could be written to it..
+        /// </summary>
+        internal static string WriterCompletedBeforeReaderWas {
+            get {
+                return ResourceManager.GetString("WriterCompletedBeforeReaderWas", resourceCulture);
             }
         }
     }

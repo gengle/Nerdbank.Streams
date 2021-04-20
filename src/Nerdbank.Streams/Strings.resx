@@ -132,6 +132,12 @@
   <data name="NotSupportedWhenExistingPipeSpecified" xml:space="preserve">
     <value>This operation is not supported when the Channel is created with ChannelOptions.ExistingPipe set.</value>
   </data>
+  <data name="PipeReaderCanceled" xml:space="preserve">
+    <value>The PipeReader was canceled.</value>
+  </data>
+  <data name="PipeWriterCanceled" xml:space="preserve">
+    <value>The PipeWriter was canceled.</value>
+  </data>
   <data name="ReadBeforeAdvanceTo" xml:space="preserve">
     <value>No reading operation to complete.</value>
   </data>
@@ -143,5 +149,8 @@
   </data>
   <data name="SeededChannelsRequireV3Protocol" xml:space="preserve">
     <value>Seeded channels must be empty unless the protocol version is 3 or later.</value>
+  </data>
+  <data name="WriterCompletedBeforeReaderWas" xml:space="preserve">
+    <value>The PipeWriter was marked as completed before all bytes from the reader could be written to it.</value>
   </data>
 </root>
