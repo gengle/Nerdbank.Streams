@@ -399,52 +399,48 @@ namespace Nerdbank.Streams
                 return Task.FromCanceled(cancellationToken);
             }
 
-            return Task.Run(async delegate
+            return CopyToAsyncCore(writer, async delegate (PipeWriter destination, ReadOnlyMemory<byte> memory, CancellationToken cancellationToken)
             {
-                try
+                if ((await destination.WriteAsync(memory, cancellationToken).ConfigureAwait(continueOnCapturedContext: false)).IsCanceled)
                 {
-                    while (true)
+                    throw new InvalidOperationException(Strings.PipeWriterCanceled);
+                }
+            }, cancellationToken);
+
+            async Task CopyToAsyncCore<TStream>(TStream destination, Func<TStream, ReadOnlyMemory<byte>, CancellationToken, ValueTask> writeAsync, CancellationToken cancellationToken)
+            {
+                while (true)
+                {
+                    ReadResult result = await reader.ReadAsync(cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+                    ReadOnlySequence<byte> buffer = result.Buffer;
+                    SequencePosition position = buffer.Start;
+                    SequencePosition consumed = position;
+                    try
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        ReadResult result = await reader.ReadAsync(cancellationToken).ConfigureAwait(false);
                         if (result.IsCanceled)
                         {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            throw new OperationCanceledException(Strings.PipeReaderCanceled);
+                            throw new InvalidOperationException(Strings.PipeReaderCanceled);
                         }
 
-                        writer.Write(result.Buffer);
-                        reader.AdvanceTo(result.Buffer.End);
-                        result.ScrubAfterAdvanceTo();
-                        FlushResult flushResult = await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
-
-                        if (flushResult.IsCanceled)
+                        ReadOnlyMemory<byte> memory;
+                        while (buffer.TryGet(ref position, out memory))
                         {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            throw new OperationCanceledException(Strings.PipeWriterCanceled);
+                            await writeAsync(destination, memory, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
+                            consumed = position;
                         }
 
-                        if (flushResult.IsCompleted)
-                        {
-                            // Break out of copy loop. The receiver doesn't care any more.
-                            break;
-                        }
-
+                        consumed = buffer.End;
                         if (result.IsCompleted)
                         {
-                            await writer.CompleteAsync().ConfigureAwait(false);
-                            break;
+                            return;
                         }
                     }
-
-                    await reader.CompleteAsync().ConfigureAwait(false);
+                    finally
+                    {
+                        reader.AdvanceTo(consumed);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    await writer.CompleteAsync(ex).ConfigureAwait(false);
-                    await reader.CompleteAsync(ex).ConfigureAwait(false);
-                }
-            });
+            }
         }
 
         /// <summary>
