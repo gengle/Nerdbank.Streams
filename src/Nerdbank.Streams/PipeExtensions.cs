@@ -394,57 +394,7 @@ namespace Nerdbank.Streams
             Requires.NotNull(reader, nameof(reader));
             Requires.NotNull(writer, nameof(writer));
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return Task.FromCanceled(cancellationToken);
-            }
-
-            return Task.Run(async delegate
-            {
-                try
-                {
-                    while (true)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        ReadResult result = await reader.ReadAsync(cancellationToken).ConfigureAwait(false);
-                        if (result.IsCanceled)
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            throw new OperationCanceledException(Strings.PipeReaderCanceled);
-                        }
-
-                        writer.Write(result.Buffer);
-                        reader.AdvanceTo(result.Buffer.End);
-                        result.ScrubAfterAdvanceTo();
-                        FlushResult flushResult = await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
-
-                        if (flushResult.IsCanceled)
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            throw new OperationCanceledException(Strings.PipeWriterCanceled);
-                        }
-
-                        if (flushResult.IsCompleted)
-                        {
-                            // Break out of copy loop. The receiver doesn't care any more.
-                            break;
-                        }
-
-                        if (result.IsCompleted)
-                        {
-                            await writer.CompleteAsync().ConfigureAwait(false);
-                            break;
-                        }
-                    }
-
-                    await reader.CompleteAsync().ConfigureAwait(false);
-                }
-                catch (Exception ex)
-                {
-                    await writer.CompleteAsync(ex).ConfigureAwait(false);
-                    await reader.CompleteAsync(ex).ConfigureAwait(false);
-                }
-            });
+            return reader.CopyToAsync(writer, cancellationToken);
         }
 
         /// <summary>
