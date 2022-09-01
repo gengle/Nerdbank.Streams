@@ -1665,9 +1665,9 @@ nanomatch@^1.2.9:
     to-regex "^3.0.1"
 
 nerdbank-gitversioning@^3.4.231:
-  version "3.5.107"
-  resolved "https://registry.yarnpkg.com/nerdbank-gitversioning/-/nerdbank-gitversioning-3.5.107.tgz#0987cc7d8267d116800db0cb3cb2ba64ebeed6fb"
-  integrity sha512-7Jup7ZA3jpDML8abXScBD7Zq31etZOklMhnQUt5XuWVCdRLeUuyvzYAS2Xo6TmbD6mJczWaegmZFoZW76m1rIQ==
+  version "3.5.109"
+  resolved "https://registry.yarnpkg.com/nerdbank-gitversioning/-/nerdbank-gitversioning-3.5.109.tgz#9a35fc516aaceee2773e966d446309521e2a4325"
+  integrity sha512-CQFu4vhjQ4o4cicJaklsp4RNTCyxBW2rKig/Aej/xNgkmjo8a87NWLj55WmMhV79soC88eRVRRct/SEPArnW3A==
   dependencies:
     camel-case "^4.1.2"
 
