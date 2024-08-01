@@ -31,14 +31,14 @@
     "test": "jasmine"
   },
   "devDependencies": {
-    "@types/jasmine": "^4.0.3",
+    "@types/jasmine": "^5.1.4",
     "@types/mkdirp": "^1.0.2",
     "@types/msgpack-lite": "^0.1.8",
     "@types/node": "^15.14.5",
     "@types/promise": "^7.1.30",
     "gulp": "^4.0.2",
     "gulp-typescript": "^6.0.0-alpha.1",
-    "jasmine": "^4.0.2",
+    "jasmine": "^5.2.0",
     "jshint": "^2.13.0",
     "mkdirp": "^1.0.4",
     "nerdbank-gitversioning": "^3.4.231",
